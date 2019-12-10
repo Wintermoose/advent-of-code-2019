@@ -42,7 +42,7 @@ function testVisible( x, y ) {
             // we test up to 8 directions here. Following the compass. Anticlockwise from bottom
             // No overlaps please
             // S-SE
-            testAt( step, radius, cd );
+            if ( step !== 0 ) testAt( step, radius, cd );
             // E-SE
             if ( step < radius ) testAt( radius, step, cd );
             // E-NE
