@@ -1,27 +1,14 @@
 const cache = {};
 function gdc( a, b ) {
+    if ( a === 0 ) return b;
+    if ( b === 0 ) return a;
     const key = a + "_" + b;
     let result = cache[key];
-    if ( result !== undefined ) return result;
-
-    let keys = [];
-    const saveCache = ( result ) => keys.forEach( key => cache[key] = result );
-    while ( true ) {
-        if ( a === 0 ) {
-            saveCache( b );
-            return b;
-        }
-        if ( b === 0 ) {
-            saveCache( a );
-            return a;
-        }
-
-        keys.push( a + "_" + b );
-
-        const temp = a % b;
-        a = b;
-        b = temp;
+    if ( result === undefined ) {
+        result = gdc( b, a % b );
+        cache[key] = result;
     }
+    return result;
 }
 
 module.exports = gdc;
