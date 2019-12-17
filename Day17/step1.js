@@ -16,9 +16,11 @@ rl.on( "SIGINT", () => {
 
 const program = fs.readFileSync( filename, { encoding: "utf8" } );
 
-const print = (grid) => {
-    // readline.cursorTo( process.stdout, 0, 0 );
-    // readline.clearScreenDown();
+const print = ( grid, clear ) => {
+    if ( clear ) {
+        readline.cursorTo( process.stdout, 0, 0 );
+        readline.clearScreenDown();
+    }
     grid.print( v => String.fromCharCode(v) );
 }
 
@@ -215,7 +217,8 @@ function gatherSteps( grid ) {
 
 function runProgram( searchProgram ) {
     const eol = String.fromCharCode( 10 );
-    const inputs = ( searchProgram.join( eol ) + eol + "n" + eol ).split("");
+    const showVideo = false;
+    const inputs = ( searchProgram.join( eol ) + eol + ( showVideo ? "y" : "n" ) + eol ).split("");
     const cpu = new Cpu( program );
     cpu.memory[0] = 2n;
     const grid = new Grid( "" );
@@ -232,13 +235,20 @@ function runProgram( searchProgram ) {
             if ( val < 255 ) {
                 val = Number( val );
                 if ( val === 10 ) {
-                    cx = 0;
-                    cy += 1;
+                    if ( cx === 0 ) {
+                        cy = 0;
+                        print(grid, true);
+                        console.log( `Robot gathered ${result} dust particles` );
+                    } else {
+                        cx = 0;
+                        cy += 1;
+                    } 
                 } else {
                     grid.set( cx, cy, val );
                     cx += 1;
                 }
             } else {
+                console.log( result );
                 result = val;
             }
         },
