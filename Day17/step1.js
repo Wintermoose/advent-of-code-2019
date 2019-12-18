@@ -256,6 +256,7 @@ function runProgram( searchProgram ) {
             console.log( "Done" );
             print( grid );
             console.log( `Robot gathered ${result} dust particles` );
+            console.log( searchProgram );
             rl.close();
         }
     } );
@@ -266,7 +267,6 @@ function runProgram( searchProgram ) {
 gatherScaffolding( grid => {
     const program = gatherSteps( grid );
     if ( program ) {
-        console.log( program );
         runProgram( program );
     } else {
         console.log( "Couldn't figure it out, sorry" );
