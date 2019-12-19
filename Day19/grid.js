@@ -1,3 +1,5 @@
+const fs = require( "fs" );
+
 class Grid{
 
     constructor( content, defaultValue ) {
@@ -56,6 +58,34 @@ class Grid{
             }
             console.log( result );
         }
+    }
+
+    getTGA( mapper ) {
+        const width = this.maxX - this.minX + 1;
+        const height = this.maxY - this.minY + 1;
+        const buffer = Buffer.alloc( width * height * 3 + 18, 0 );
+        buffer[2] = 2;
+        buffer[12] = width & 255;
+        buffer[13] = ( width >> 8 ) & 255;
+        buffer[14] = height & 255;
+        buffer[15] = ( height >> 8 ) & 255;
+        buffer[16] = 24;
+        buffer[17] = 32;
+        let pos = 18;
+        for ( let y = this.minY; y <= this.maxY; ++y ) {
+            let result = "";
+            for ( let x = this.minX; x <= this.maxX; ++x ) {
+                mapper( this.get( x, y ), x, y, buffer, pos );
+                pos += 3;
+            }
+            console.log( result );
+        }
+        return buffer;
+    }
+
+    writeTGA( mapper, filename ) {
+        const buffer = this.getTGA( mapper );
+        fs.writeFileSync( filename, buffer );
     }
 
     dump() {

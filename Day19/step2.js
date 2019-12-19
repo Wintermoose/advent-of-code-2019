@@ -187,6 +187,22 @@ findLocation( size, ( grid, x, y ) => {
         if ( v === 2 ) return "o";
         return v ? "#" : "."
     })
-    console.log( (x - size + 1) * 10000 + y );
+    console.log( ( x - size + 1 ) * 10000 + y );
+    grid.writeTGA( ( v, px, py, buffer, offset ) => {
+        if ( v === 0 ) return;
+        if ( v === 2 ) {
+            if ( px === x - size + 1 && py === y ) {
+                buffer[offset] = 255;
+            } else {
+                buffer[offset + 1] = 255;
+            }
+            return;
+        }
+        if ( v ) {
+            buffer[offset] = buffer[offset + 1] = buffer[offset + 2] = 255;
+        } else {
+            buffer[offset] = buffer[offset + 1] = buffer[offset + 2] = 40;
+        }
+    }, "result.tga" );
     rl.close();
 } );
